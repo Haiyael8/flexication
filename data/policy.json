@@ -1,0 +1,30 @@
+{
+  "title": "How the benefit works",
+  "intro": "Buy extra vacation days, or sell days you will not use.",
+  "highlight": "You can do this once a year: either buy or sell, not both.",
+  "sections": [
+    {
+      "heading": "Buying vacation days",
+      "paragraphs": [
+        "You can buy up to 40% of your annual vacation entitlement.",
+        "The cost comes out of your salary over 5 monthly payslips.",
+        "**You cannot buy in a year in which you sell.**"
+      ]
+    },
+    {
+      "heading": "Selling vacation days",
+      "paragraphs": [
+        "You can sell only after you have used at least 7 vacation days this year.",
+        "You can sell up to 20% of your annual entitlement.",
+        "You get the payment in your December payslip.",
+        "**You cannot sell in a year in which you buy.**"
+      ]
+    }
+  ],
+  "formula": {
+    "gross": "Gross day value = monthly salary / (21.6 x employment %, for example 0.8 for an 80% job).",
+    "net": "Net day value = gross day value x (100% - tax rate).",
+    "note": "Every amount is an estimate."
+  },
+  "declaration": "I confirm that the details I entered are correct and that I have read and accepted the policy."
+}

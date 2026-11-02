@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1024">
+  <title>Flexication - Employee</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="app-fit">
+  <header class="app-header" id="app-header"><a class="brand" href="index.html">Flexication</a></header>
+  <main class="wide">
+    <div id="status" class="message" role="status" aria-live="polite"></div>
+
+    <!-- Screen 1: Onboarding -->
+    <section id="screen-onboarding" hidden>
+      <div class="card hero">
+        <div class="hero-text">
+          <h1 id="h-onboarding" tabindex="-1">More freedom for your time</h1>
+          <p>Buy or sell vacation days and take control of your time.</p>
+          <div id="rejected-banner" class="message info" role="status" hidden></div>
+          <div class="benefits">
+            <div class="benefit"><span class="icon-circle small-circle" data-icon="plane"></span><div><strong>More flexibility</strong><div class="small">Plan your time your way.</div></div></div>
+            <div class="benefit"><span class="icon-circle small-circle" data-icon="heart"></span><div><strong>Better balance</strong><div class="small">More time for what matters.</div></div></div>
+            <div class="benefit"><span class="icon-circle small-circle" data-icon="smile"></span><div><strong>Greater choice</strong><div class="small">Buy or sell, based on your needs.</div></div></div>
+          </div>
+        </div>
+        <div class="hero-img"><img src="img/hero.jpg" alt="A family sitting on a beach and looking at the sea"></div>
+      </div>
+
+      <div class="cols-2-1">
+        <div class="card">
+          <div class="card-title"><span class="icon-circle small-circle" data-icon="doc"></span><h2 id="policy-title">How the benefit works</h2></div>
+          <p id="policy-intro" class="policy-intro"></p>
+          <div id="policy-sections" class="policy-cols"></div>
+          <div class="accept-box">
+            <div class="check">
+              <input type="checkbox" id="accept">
+              <label for="accept">I have read and accept the policy</label>
+            </div>
+            <button class="btn" id="to-request" type="button" disabled data-icon-after="arrow">Continue</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Submission windows</h2>
+          <div class="result-line"><span>Buy</span><strong>Jan, Apr, Jul, Oct 1-14</strong></div>
+          <div class="result-line"><span>Sell</span><strong>Oct 1-31</strong></div>
+          <h3 style="margin-top:16px">Windows in this demo</h3>
+          <div class="table-wrap">
+            <table class="compact">
+              <thead><tr><th scope="col">Type</th><th scope="col">From</th><th scope="col">To</th><th scope="col">Status</th></tr></thead>
+              <tbody id="windows-body"></tbody>
+            </table>
+          </div>
+          <p class="small" id="no-window-note" hidden>No submission window is open right now. You can read the policy, but you cannot submit a request.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Screen 2: Request -->
+    <section id="screen-request" hidden>
+      <h1 id="h-request" tabindex="-1">Your Request</h1>
+      <div class="cols-3">
+        <div class="stack">
+          <div class="card">
+            <div class="field" style="margin-bottom:0">
+              <div class="label-row">
+                <label for="used">Vacation days I used this year</label>
+              </div>
+              <input id="used" type="text" inputmode="numeric" autocomplete="off" aria-describedby="annual-note used-error">
+              <p class="small" id="annual-note" style="margin:4px 0 0"></p>
+              <p class="error-text" id="used-error"></p>
+            </div>
+          </div>
+          <div class="card">
+            <p class="once-note">You can buy or sell only once a year.</p>
+            <div id="eligibility" aria-live="polite">
+              <div class="tile-pair" style="margin-top:0">
+                <div class="tile"><span class="tile-label">Eligible to buy</span><span class="tile-value" id="elig-buy">-</span></div>
+                <div class="tile"><span class="tile-label">Eligible to sell</span><span class="tile-value" id="elig-sell">-</span></div>
+              </div>
+            </div>
+            <p class="small" id="elig-why" style="margin:4px 0"></p>
+          </div>
+          <div class="card">
+            <h2>Approval</h2>
+            <div class="field">
+              <label for="mgr">Approving Manager</label>
+              <input id="mgr" type="text" inputmode="email" autocomplete="off" placeholder="Email" aria-describedby="mgr-hint mgr-error">
+              <p class="error-text" id="mgr-error"></p>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label for="senior">Additional Manager (optional)</label>
+              <input id="senior" type="text" inputmode="email" autocomplete="off" placeholder="Email" aria-describedby="senior-error">
+              <p class="error-text" id="senior-error"></p>
+            </div>
+            <p class="small" id="mgr-hint" style="margin:8px 0 0">Demo: use david.levy@flexication.test.</p>
+          </div>
+        </div>
+
+        <div class="card ai-card">
+          <div class="card-title"><span class="icon-circle small-circle blue" data-icon="bot"></span><h2>AI interview</h2></div>
+          <p class="small" id="ai-notice" style="margin:0 0 8px"></p>
+          <div class="chat" id="chat" role="log" aria-live="polite" aria-label="AI interview messages"></div>
+          <form id="chat-form" class="row" style="align-items:flex-end;flex-wrap:nowrap" novalidate>
+            <div style="flex:1"><label for="chat-input">Type a message</label>
+              <input id="chat-input" type="text" autocomplete="off" maxlength="500" style="margin:0"></div>
+            <button class="btn" id="chat-send" type="submit">Send</button>
+          </form>
+          <p class="small" style="margin:8px 0 0">Do not write identifying details. Try "I want to sell some days", or "/fail".</p>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <div class="card-title"><span class="icon-circle small-circle blue" data-icon="calc"></span><h2>Vacation Days Cost Simulator <span class="optional">(optional)</span></h2></div>
+            <fieldset class="segmented">
+              <legend class="small">Simulate</legend>
+              <label class="seg"><input type="radio" name="simtype" value="buy" checked> Buy</label>
+              <label class="seg"><input type="radio" name="simtype" value="sell"> Sell</label>
+            </fieldset>
+            <div class="row-fields">
+              <div class="field">
+                <label for="salary">Monthly salary (&#8362;)</label>
+                <input id="salary" type="text" inputmode="decimal" autocomplete="off" aria-describedby="salary-error">
+                <p class="error-text" id="salary-error"></p>
+              </div>
+              <div class="field">
+                <label for="workpct">Employment %</label>
+                <input id="workpct" type="text" inputmode="decimal" autocomplete="off" value="100" aria-describedby="workpct-error">
+                <p class="error-text" id="workpct-error"></p>
+              </div>
+            </div>
+            <div class="field">
+              <label for="tax">Tax bracket</label>
+              <select id="tax" aria-describedby="tax-error">
+                <option value="">Select bracket</option>
+                <option value="10">10%</option>
+                <option value="14">14%</option>
+                <option value="20">20%</option>
+                <option value="31">31%</option>
+                <option value="35">35%</option>
+                <option value="47">47%</option>
+                <option value="50">50%</option>
+              </select>
+              <p class="error-text" id="tax-error"></p>
+            </div>
+            <div aria-live="polite">
+              <div class="result-line"><span>Gross day value (estimated)</span><strong id="sim-gross">-</strong></div>
+              <div class="result-line"><span>Net day value (estimated)</span><strong id="sim-net">-</strong></div>
+              <div class="result-line"><span id="sim-label">Buy - monthly deduction per day over 5 payslips (estimated)</span><strong id="sim-extra">-</strong></div>
+            </div>
+          </div>
+          <div class="actions end" style="margin:0">
+            <button class="btn" id="to-confirm" type="button" data-icon-after="arrow">Continue</button>
+          </div>
+          <div id="msg-request" class="message" role="alert" style="margin:0"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Screen 3: Confirm and submit -->
+    <section id="screen-confirm" hidden>
+    <div class="confirm-head">
+      <h1 id="h-confirm" tabindex="-1">Confirm and submit</h1>
+      <div class="frame"><span data-icon="info"></span>You can buy or sell only once a year</div>
+    </div>
+    <div class="confirm-layout">
+    <div class="confirm-wrap">
+      <div class="grid-2">
+        <div class="choice" id="choice-buy">
+          <div class="choice-head">
+            <span class="icon-circle" data-icon="plus"></span>
+            <div><h2>Days eligible to buy</h2><div class="big" id="buy-range">-</div></div>
+          </div>
+          <button class="btn" id="pick-buy" type="button" aria-pressed="false">Buy</button>
+          <button class="btn-link" id="change-buy" type="button" hidden>Change choice</button>
+          <p class="choice-note" id="buy-note"></p>
+        </div>
+        <div class="choice" id="choice-sell">
+          <div class="choice-head">
+            <span class="icon-circle blue" data-icon="minus"></span>
+            <div><h2>Days eligible to sell</h2><div class="big" id="sell-range">-</div></div>
+          </div>
+          <button class="btn btn-secondary" id="pick-sell" type="button" aria-pressed="false">Sell</button>
+          <button class="btn-link" id="change-sell" type="button" hidden>Change choice</button>
+          <p class="choice-note" id="sell-note"></p>
+        </div>
+      </div>
+      <div class="center-col">
+        <div class="card days-row">
+          <div>
+            <label for="days" style="margin-bottom:2px">Number of days</label>
+            <p class="hint" id="days-hint" style="margin:0">Choose Buy or Sell first.</p>
+            <p class="error-text" id="days-error"></p>
+          </div>
+          <div class="stepper">
+            <input id="days" type="text" inputmode="numeric" autocomplete="off" disabled aria-describedby="days-hint days-error">
+            <button class="step-btn" id="days-minus" type="button" aria-label="Fewer days" data-icon="minus" disabled></button>
+            <button class="step-btn" id="days-plus" type="button" aria-label="More days" data-icon="plus" disabled></button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="check">
+            <input type="checkbox" id="declare">
+            <label for="declare">I confirm the declaration</label>
+          </div>
+          <p class="small" id="declaration-text"></p>
+          <p class="once-year-note" style="margin:12px 0 0"><span class="emph">After submitting, you cannot submit another request this year while this one is pending or approved.</span></p>
+          <div class="actions" style="margin-top:12px">
+            <button class="btn btn-outline" id="back-request" type="button">Back</button>
+            <button class="btn" id="submit" type="button" disabled data-icon="send" style="flex:1">Submit</button>
+          </div>
+          <div id="msg-confirm" class="message" role="alert"></div>
+        </div>
+      </div>
+    </div>
+    <div class="side-photo"><img src="img/beach.jpg" alt="Two beach chairs under an umbrella, facing the sea"></div>
+    </div>
+    </section>
+
+    <!-- Screen 4: Summary -->
+    <section id="screen-summary" hidden>
+      <div class="success">
+        <span class="success-icon" data-icon="check"></span>
+        <h1 id="h-summary" tabindex="-1">Request submitted</h1>
+        <p class="big-number">Request number: <span id="s-number"></span></p>
+      </div>
+      <div class="summary-grid">
+        <div class="card">
+          <h2>Next Steps</h2>
+          <div class="stack">
+            <div class="person"><span class="icon-circle" data-icon="mail"></span><div><div class="small">Request sent to:</div><strong>Approving manager</strong></div></div>
+            <div class="person"><span class="icon-circle blue" data-icon="user"></span><div><div class="small">Approver:</div><strong id="s-approver"></strong></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Request details</h2>
+          <dl class="kv">
+            <dt>Request type</dt><dd id="s-type"></dd>
+            <dt>Days requested</dt><dd id="s-days"></dd>
+            <dt>Window</dt><dd id="s-window"></dd>
+            <dt>Status</dt><dd id="s-status"></dd>
+          </dl>
+        </div>
+        <div class="summary-photo"><img src="img/beach.jpg" alt="Two beach chairs under an umbrella, facing the sea"></div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="js/pages/employee.js"></script>
+</body>
+</html>

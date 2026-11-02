@@ -2,11 +2,26 @@
 <html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flexication</title>
+  <meta name="viewport" content="width=1024">
+  <title>Flexication - Sign in</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <h1>Flexication</h1>
-  <p>Setup complete. Milestone 1 is next.</p>
+  <header class="app-header" id="app-header"><a class="brand" href="index.html">Flexication</a></header>
+  <main>
+    <section class="card">
+      <h1>Sign in</h1>
+      <p>This is a frontend prototype with demo data. Choose a demo user to continue. No password is needed, and nothing leaves your browser.</p>
+      <ul class="user-list" id="user-list" aria-label="Demo users"></ul>
+      <div id="status" class="message" role="status" aria-live="polite"></div>
+      <div class="actions">
+        <button class="btn btn-outline" id="reset" type="button">Reset demo data</button>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="js/pages/login.js"></script>
 </body>
 </html>

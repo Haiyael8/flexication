@@ -1,0 +1,7 @@
+email,full_name,role,annual_days
+yael.avraham@flexication.test,Yael Avraham,employee,26
+not-an-email,Broken Row,employee,20
+ron.peretz@flexication.test,Ron Peretz,boss,22
+omer.katz@flexication.test,Omer Katz,employee,22
+gil.dahan@flexication.test,Gil Dahan,employee,twenty
+gil.dahan@flexication.test,Gil Dahan,employee,21

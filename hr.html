@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1024">
+  <title>Flexication - HR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="app-header" id="app-header"><a class="brand" href="index.html">Flexication</a></header>
+  <main>
+    <div id="status" class="message" role="status" aria-live="polite"></div>
+    <div id="content" hidden>
+      <h1>HR administration</h1>
+
+      <section class="card" aria-labelledby="h-windows">
+        <h2 id="h-windows">Submission windows</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Type</th><th scope="col">From</th><th scope="col">To</th><th scope="col">Status</th></tr></thead>
+            <tbody id="windows-body"></tbody>
+          </table>
+        </div>
+        <h3 style="margin-top:24px">Open a window</h3>
+        <form id="window-form" novalidate>
+          <div class="row" style="align-items:flex-start">
+            <div class="field" style="flex:1">
+              <label for="w-type">Type</label>
+              <select id="w-type"><option value="buy">Buy</option><option value="sell">Sell</option></select>
+            </div>
+            <div class="field" style="flex:1">
+              <label for="w-start">Start date</label>
+              <input id="w-start" type="date" aria-describedby="w-error">
+            </div>
+            <div class="field" style="flex:1">
+              <label for="w-end">End date (included)</label>
+              <input id="w-end" type="date" aria-describedby="w-error">
+            </div>
+          </div>
+          <p class="error-text" id="w-error" style="color:var(--error);font-weight:500"></p>
+          <button class="btn" type="submit">Open window</button>
+        </form>
+        <div id="msg-window" class="message" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="card" aria-labelledby="h-employees">
+        <h2 id="h-employees">Employees</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Email</th><th scope="col">Full name</th><th scope="col">Role</th><th scope="col" class="num">Annual days</th></tr></thead>
+            <tbody id="employees-body"></tbody>
+          </table>
+        </div>
+        <h3 style="margin-top:24px">Load employees from a CSV file</h3>
+        <p class="small">UTF-8 file with the header <code>email,full_name,role,annual_days</code>. Existing employees (same email) are updated. Employees missing from the file are kept.
+          Try <a href="data/sample-employees.csv" download>sample-employees.csv</a> or <a href="data/sample-employees-with-errors.csv" download>sample-employees-with-errors.csv</a>.</p>
+        <div class="field">
+          <label for="csv-file">CSV file</label>
+          <input id="csv-file" type="file" accept=".csv,text/csv">
+        </div>
+        <div id="csv-summary" aria-live="polite"></div>
+        <div id="msg-csv" class="message" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="card" aria-labelledby="h-requests">
+        <h2 id="h-requests">Requests</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Request</th><th scope="col">Employee</th><th scope="col">Type</th><th scope="col" class="num">Days</th><th scope="col">Status</th></tr></thead>
+            <tbody id="requests-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-report">
+        <h2 id="h-report">Payroll report</h2>
+        <p class="small">Approved requests only, with the number of days each employee chose. Buy: plus days. Sell: minus days. Salary data is kept in the HR system of record. Approve a request in the manager view first to see rows.</p>
+        <div class="field">
+          <label for="r-window">Window</label>
+          <select id="r-window"></select>
+        </div>
+        <p id="report-count" class="small" aria-live="polite"></p>
+        <button class="btn" id="download" type="button">Download CSV</button>
+        <div id="msg-report" class="message" role="status" aria-live="polite"></div>
+      </section>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script type="module" src="js/pages/hr.js"></script>
+</body>
+</html>
