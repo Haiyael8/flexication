@@ -32,23 +32,23 @@
 - **מה קורה במסך:** העובד קורא את המדיניות ומסמן שקרא (פעולה מפורשת, FR-04). רק אחרי הסימון הוא ממשיך. לחיצה על "Continue" מעבירה למסך 2 (Request).
 
 ### 2. בקשה (Request)
-- **המטרה:** לאסוף מהעובד את הנתונים לבקשה, להציג לו כמה ימים הוא זכאי לקנות או למכור, ולתת לו הערכת עלות לפני השליחה.
+- **המטרה:** לאסוף מהעובד את הנתונים לבקשה, להציג לו כמה ימים הוא זכאי לקנות או למכור, ולתת לו אפשרות לסימולציה אופציונלית של שווי יום חופש.
 - **מה יש במסך:**
   - שדה "Vacation days I used this year" (מספר שלם, לא שלילי, לא גדול מהזכאות השנתית), ומתחתיו "Annual entitlement" (ב-wireframes: 23 days). הזכאות מגיעה ממאגר העובדים.
   - "AI interview": שיחה עם ה-AI, שדה "Type a message" וכפתור "Send".
   - תוצאת הזכאות: "Eligible to buy: 1-9 days" ו-"Eligible to sell: up to 4 days".
   - הודעה קבועה: "You can buy or sell only once a year".
   - "Salary simulator": בורר Buy / Sell, שדות Monthly salary, Employment % ו-Tax bracket, ותוצאות: "Gross vacation day value (estimated)", "Net vacation day value (estimated)" ו-"Buy - monthly deduction over 5 payslips".
-  - "Managers": שדות Direct manager ו-Senior manager.
+  - "Approval": שדות Approving Manager ו-Additional Manager (אופציונלי).
   - כפתור "Continue".
 - **מה קורה במסך:**
   - ה-AI מראיין את העובד ומסביר את התוצאה. מספר הימים הזכאים מחושב בקוד, ולא על ידי ה-AI.
   - הסימולטור מתעדכן עם כל נתון שהעובד מזין. בקנייה העלות מחולקת ל-5 תלושים. במכירה הזיכוי מוצג בתלוש דצמבר ואינו נפרס (PRD, FR-07).
-  - מנהל בכיר הוא גיבוי בלבד, והאישור חד-שלבי.
+  - המנהל הנוסף הוא גיבוי בלבד, והאישור חד-שלבי.
   - "Continue" מעביר למסך 3 (Confirm and submit).
 
 ### 3. אישור וביצוע (Confirm and submit)
-- **המטרה:** לתת לעובד לבחור פעולה וכמות, לראות את העלות לפני השליחה, ולשלוח את הבקשה.
+- **המטרה:** לתת לעובד לבחור פעולה וכמות, לשלוח את הבקשה (בלי הצגת עלות).
 - **מה יש במסך:**
   - מסגרת בולטת בראש המסך: "You can buy or sell only once a year".
   - שני כרטיסים: "Days eligible to buy: 1-9 days" עם כפתור "Buy", ו-"Days eligible to sell: up to 4 days" עם כפתור "Sell".
@@ -68,7 +68,7 @@
 - **המטרה:** לאשר לעובד שהבקשה נשלחה, ולהראות מה קורה אחר כך.
 - **מה יש במסך:**
   - "Request submitted" ו-"Request number" (ב-wireframes: FLX-000123).
-  - "Next Steps": "Request sent to: Direct manager", "Approver: manager name". אין מועד צפוי לתשובה (הוחלט ב-17.10.2026).
+  - "Next Steps": "Request sent to: Approving manager", "Approver: manager name". אין מועד צפוי לתשובה (הוחלט ב-17.10.2026).
   - "Request details": Request type, Days, "Estimated amount", ו-Status ("Pending approval").
 - **מה קורה במסך:**
   - המסך מוצג מיד אחרי השליחה.
@@ -170,3 +170,10 @@
 7. **שם חלונות ההגשה:** ב-`mockups.png` הכותרת היא "Election windows", וב-wireframes "Submission windows". יש לבחור שם אחד.
 8. **נוסח "פעם אחת בשנה":** הטקסט "After submitting, you cannot submit another request this year" מדויק רק לבקשה ממתינה או מאושרת. לפי FR-02, בקשה שנדחתה או שנסגרה ללא החלטה אינה נספרת.
 9. **מסך כניסה:** מופיע ב-`ARCHITECTURE.md` אבל לא בתמונות וב-PRD. אין לו עיצוב.
+
+## עדכון מ-2.11.2026 (אב טיפוס)
+
+- נבנה לפי `wireframes.png` (פריסה) ו-`mockups.png` (מראה): תמונות חתוכות מה-mockup, אייקונים בקו בעיגולים, כפתורי Primary בגרדיאנט Ocean Blue (טקסט לבן, ניגודיות 4.5:1 ומעלה), בלי לוח שנה ובלי Stepper.
+- מסך 3: Buy ו-Sell לא ניתנים לבחירה יחד, עם "Change choice". כרטיסי הכמות וההצהרה בעמודה אחת, ותמונה לאורך הכרטיסים.
+- מסך 4 בלי סכום. HR: אזור ניהול אחד (חלונות, עובדים וטעינת CSV, בקשות, דו"ח).
+- דרגת מס: רשימת בחירה (הנחה של האב טיפוס).

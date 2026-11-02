@@ -108,7 +108,7 @@
 - קנייה: מוצגת עלות חודשית `round2(total / 5)` על פני 5 תלושים. מכירה: זיכוי אחד בתלוש דצמבר.
 - דוגמאות: שכר 15,000 ב-100% משרה נותן 694.44. ב-80% משרה נותן 868.06.
 - הכפלה בימים נעשית באגורות שלמות, כדי להימנע משגיאות עשרוניות (למשל 5 כפול 694.44 צריך לתת בדיוק 3,472.20).
-- הערכים הנשמרים עם הבקשה הם `day_value_gross` ו-`amount_gross_signed` (ברוטו). `days` נשמר כמספר חיובי. אחוז המס והשכר אינם נשמרים.
+- הבקשה אינה שומרת שווי יום וסכום (עודכן ב-2.11.2026): הסימולטור אופציונלי והשכר נמצא במערכות ה-HR. `days` נשמר כמספר חיובי. אחוז המס והשכר אינם נשמרים.
 
 ### 2.4 תאריכים וחלונות
 - "היום" נקבע לפי אזור הזמן `Asia/Jerusalem`. הקוד משתמש ב-`Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jerusalem' })` לקבלת התאריך כמחרוזת `YYYY-MM-DD`.
@@ -168,7 +168,6 @@
 | `annual_days`, `used_days` | integer | עותק של הזכאות ושל מה שהעובד הזין, לתיעוד |
 | `days` | integer | מספר הימים המבוקשים |
 | `manager_email`, `senior_manager_email` | text | המנהל הבכיר הוא גיבוי בלבד |
-| `day_value_gross`, `amount_gross_signed` | numeric | ראו סעיף 2.3 |
 | `declaration_accepted` | boolean | חייב להיות true |
 | `status` | text | `pending`, `approved`, `rejected` |
 | `decided_at`, `created_at` | timestamptz | |
@@ -216,8 +215,6 @@ create table public.requests (
   days                 integer not null check (days > 0),
   manager_email        text not null check (manager_email = lower(manager_email)),
   senior_manager_email text check (senior_manager_email = lower(senior_manager_email)),
-  day_value_gross      numeric(10,2) not null check (day_value_gross > 0),
-  amount_gross_signed  numeric(12,2) not null,
   declaration_accepted boolean not null check (declaration_accepted),
   status               text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
   decided_at           timestamptz,
@@ -372,7 +369,7 @@ create policy requests_update_hr on public.requests for update to authenticated
 - **טווח הימים לא נאכף במסד.** משתמש טכני יכול להכניס `days` גדול מהמותר ישירות ב-API. ההגנה היא בקוד הלקוח. זה מקובל בהדגמה עם 5 משתמשים. אם יידרש, אפשר להוסיף `check` או כלל בהרשאה, תוך כפילות של הנוסחה.
 - **הפונקציה `has_counted_request`** ניתנת להרצה לכל משתמש מחובר ולכל אימייל, ומחזירה רק true או false. זה דליפה קטנה שמקובלת בהדגמה.
 - **מרוץ הגשות:** שתי הגשות באותה שנייה מאותו עובד עלולות לעבור שתיהן. לא טופל.
-- **הסכום נשמר כפי שהלקוח חישב.** השכר שהעובד מזין אינו נבדק (כנקבע ב"מה המערכת לא עושה").
+- **אין סכום שנשמר.** השכר שהעובד מזין בסימולטור האופציונלי אינו נשמר ואינו נבדק.
 
 ## 5. שכבת ה-AI
 
@@ -495,7 +492,7 @@ create policy requests_update_hr on public.requests for update to authenticated
 | HR | פתיחת חלון | `from('windows').insert({ type, start_date, end_date })` |
 | HR | טעינת עובדים | `from('employees').upsert(rows, { onConflict: 'email' })` |
 | HR | שינוי סטטוס (Should) | `from('requests').update({ status }).eq('id', id)` |
-| HR | דו"ח | `from('requests').select('id, employee_email, employee_name, days, amount_gross_signed, windows!inner(type)').eq('status', 'approved').eq('window_id', windowId)` |
+| HR | דו"ח | `from('requests').select('id, employee_email, employee_name, days, windows!inner(type)').eq('status', 'approved').eq('window_id', windowId)` |
 
 עדכון החלטה הוא **עדכון מותנה** (course-stack.md): אם `.select()` מחזיר 0 שורות, ההחלטה לא נקלטה (בקשה כבר הוכרעה, או החלון הסתיים), ומוצגת הודעה.
 
@@ -504,7 +501,7 @@ create policy requests_update_hr on public.requests for update to authenticated
 
 ### 6.3 ייצוא ויבוא קבצים (בדפדפן, בלי שרת)
 - **יבוא עובדים (`js/csv.js`):** `Papa.parse(file, { header: true, skipEmptyLines: true, encoding: 'UTF-8' })`. אימות לפני שליחה: אימייל תקין באותיות קטנות, `role` מתוך שלוש האפשרויות, `annual_days` מספר שלם לא שלילי, ובלי אימיילים כפולים. לפני הכתיבה מוצג סיכום (כמה שורות תקינות ומה נדחה). הטעינה אינה מוחקת עובדים שחסרים בקובץ (החלטה 1).
-- **ייצוא דו"ח:** קובץ CSV ב-UTF-8 עם BOM, בהורדה דרך `Blob`. עמודות: `request_id` (בפורמט `FLX-000123`), `employee_email`, `request_type` (`buy` או `sell`), `days_signed`, `amount_gross_signed`. `days_signed` מחושב ב-`csv.js` מ-`days` ומסוג החלון: קנייה `+days`, מכירה `-days`.
+- **ייצוא דו"ח:** קובץ CSV ב-UTF-8 עם BOM, בהורדה דרך `Blob`. עמודות: `request_id` (בפורמט `FLX-000123`), `employee_email`, `request_type` (`buy` או `sell`), `days_signed`. `days_signed` מחושב ב-`csv.js` מ-`days` ומסוג החלון: קנייה `+days`, מכירה `-days`.
 
 ### 6.4 אוטומציות n8n
 כל המיילים נשלחים מחשבון Gmail אחד, ורק לכתובות בדיקה. כל Workflow בודק ב-Node של תנאי שהנמען נמצא ברשימת כתובות הבדיקה (קבועה ב-Node של Set), ורק אז שולח.
@@ -675,3 +672,10 @@ create policy requests_update_hr on public.requests for update to authenticated
 6. מספיקה הפרדה לארבעה עמודים, ואין צורך ב-Router.
 7. n8n זמין בכתובת ציבורית (Cloud), כדי ש-Supabase יוכל לקרוא לו.
 8. Payroll מקבלת את הדו"ח האוטומטי בכתובת בדיקה אחת.
+
+## 13. עדכון מ-2.11.2026: אב טיפוס Frontend
+
+- אב טיפוס חי ב-GitHub Pages ללא backend. הנתונים ב-`localStorage` דרך `js/mock-client.js`, מאחורי `js/data-source.js`. מעבר ל-Supabase הוא החלפת שורה אחת: `export { sb } from './supabase-client.js';`.
+- קבצים שנוספו: `js/mock-client.js`, `js/mock-data.js`, `js/mock-ai.js`, `js/data-source.js`, `js/icons.js`, `lib/rules.js`, `tests/acceptance.mjs`, `img/`.
+- סעיפים 2.3, 3.2, 3.4, 4.4 ו-6.1 עודכנו: הבקשה והדו"ח בלי `day_value_gross` ו-`amount_gross_signed`.
+- תשובות ה-AI באב הטיפוס מוכנות מראש. החוזה בסעיף 5 נשאר לשלב ה-backend.
